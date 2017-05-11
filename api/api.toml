@@ -1,0 +1,36 @@
+[common]
+scan_success = "0000"
+scan_failure = "0001"
+sort_success = "1"
+sort_failure = "0"
+
+[production]
+inst_name  =  "CBS"
+cont = "BASEMENT"
+reg_url = "http://172.21.161.174/api/v1/controller/c1/register/"
+#scan_url = "http://172.21.161.174:8888/api/v1/controller/c1/shipment/scan/"
+scan_url = "http://127.0.0.1:8888/api/v1/controller/c1/shipment/scan/"
+sort_url = "http://127.0.0.1:8888/api/v1/controller/c1/shipment/sort/"
+#sort_url = "http://172.21.161.174/api/v1/controller/c1/shipment/sort/"
+feedback_url = "http://172.21.161.174/api/v1/controller/c1/shipment/ecds-feedback/"
+wgh_url = "http://172.21.161.174/api/v1/controller/c1/shipment/dimension/"
+event_url = "http://172.21.161.174/api/v1/controller/c1/event/event/"
+fault_code_url = "http://172.21.161.174/api/v1/controller/c1/newevent/"
+image_url = "http://172.21.161.174/api/v1/controller/c1/shipment/image/"
+mode_url = "http://172.21.161.174/api/v1/controller/c1/mode/"
+initConfig_url = "http://172.21.161.174/api/v1/controller/c1/initial/"
+
+[dev]
+inst_name  =  "TEST"
+cont = "BASEMENT"
+reg_url = "http://127.0.0.1/api/v1/controller/c1/register/"
+scn_url = "http://127.0.0.1/api/v1/controller/c1/shipment/scan/"
+srt_url = "http://127.0.0.1/api/v1/controller/c1/shipment/sort/"
+feedback_url = "http://127.0.0.1/api/v1/controller/c1/shipment/ecds-feedback/"
+wgh_url = "http://127.0.0.1/api/v1/controller/c1/shipment/dimension/"
+event_url = "http://127.0.0.1/api/v1/controller/c1/event/event/"
+fault_code_url = "http://127.0.0.1/api/v1/controller/c1/newevent/"
+image_url = "http://127.0.0.1/api/v1/controller/c1/shipment/image/"
+mode_url = "http://127.0.0.1/api/v1/controller/c1/mode/"
+initConfig_url = "http://127.0.0.1/api/v1/controller/c1/initial/"
+

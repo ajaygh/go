@@ -66,6 +66,8 @@ func checkError(eType, errStr string, err error) {
 
 func makeRequest(data interface{}, method, url string) *http.Request {
 	b := new(bytes.Buffer)
+	res, _ := json.Marshal(&data)
+	log.Println("json format ", string(res))
 	json.NewEncoder(b).Encode(data)
 	req, err := http.NewRequest(method, url, b)
 	checkError("fatal", "request creation failed", err)

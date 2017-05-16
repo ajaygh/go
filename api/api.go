@@ -6,6 +6,7 @@ Author: gor
 package main
 
 import (
+	"container/list"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -14,6 +15,7 @@ import (
 	"os"
 	"strconv"
 	"time"
+	"sync"
 )
 
 const (
@@ -42,9 +44,14 @@ const (
 )
 
 var Conf map[string]string
+var EventList *list.List
+var eventMutex = &sync.Mutex{}
 
 func main() {
+	//Init config data
 	readConfig(CONF_FILE, CONF_PATH, "production")
+	EventList = list.New()
+	go processEventData()	
 	RcvFrom(HOST, PORT)
 }
 
@@ -71,7 +78,7 @@ func checkApiData(buf []byte) {
 	}
 	//check if received packets can be processed or not
 	if buf[16] != MIDDLEWARE_ID {
-		log.Fatalln("Packet type mismatch")
+		log.Fatalln("Packet Receiver id mismatch")
 		return
 	}
 }
@@ -83,14 +90,19 @@ func handleConn(conn *net.UDPConn) {
 	_, addr, err := conn.ReadFromUDP(buf[0:])
 	checkError("panic", "Error in data", err)
 
+	checkApiData(buf)
 	//get type and handle accordingly
 	switch rcvType := uint8(buf[15]); RcvType(rcvType) {
 	case SCAN:
-		//go processScanData(buf)
+		go processScanData(buf)
 	case SORT_SORTER, SORT_ECDS, SORT_ICR:
 		go processSortData(buf)
 	case EVENT:
 		//processEventData(buf)
+		eventMutex.Lock()
+		log.Println("EventList Len is ", EventList.Len())
+		EventList.PushBack(buf)
+		eventMutex.Unlock()
 	default:
 		fmt.Fprintf(os.Stderr, "Wrong data type received.\n")
 	}
@@ -98,9 +110,8 @@ func handleConn(conn *net.UDPConn) {
 }
 
 func processScanData(data []byte) {
-	//filter all relevant data and put them into mapScan
 
-	//packetLen := int(data[9]) + int(data[10])*256
+	packetLen := int(data[9]) + int(data[10])*256
 	icrID := strconv.Itoa(int(data[DSI]))
 	jobID := strconv.Itoa(int(data[DSI+1]) + int(data[DSI+2])*256 +
 		int(data[DSI+3])*65536 + int(data[DSI+4])*16777216)
@@ -130,11 +141,10 @@ func processScanData(data []byte) {
 		imageUniqueNumber, imageDay, imageMonth, imageYear,
 		imageHour, imageMinutes, imageSeconds, imageMilliseconds)
 
-	//strncpy(uuid, barVms.uuid, UUID_LENGTH)
-	uuid := "1234567891234567891234567891234567890"
-	//strcpy(barcode, barVms.barcode)
-	barcode := "aa_bb_cc\ndd__ee"
-	numOfBarcodes := data[DSI+36]
+	uuid := fmt.Sprintf("%+q", data[DSI+36:DSI+73])
+	numOfBarcodes := int(data[DSI+73])
+	barcode := string(data[DSI+74:packetLen])
+	
 	scanStatus := Conf["scan_success"]
 	if numOfBarcodes == 0 {
 		scanStatus = Conf["scan_failure"]
@@ -144,25 +154,25 @@ func processScanData(data []byte) {
 		boxVol, realVol, volStatus, weightStatus, weight, inputNo,
 		imageID, uuid, barcode, scanStatus}
 
+	log.Printf("SCAN RECEIVED : %+v \n", scan)
 	chuteId := sendScanData(scan)
-	fmt.Printf("CHUTEID RECEIVED = %v\n", chuteId)
+	fmt.Printf("CHUTEID RECEIVED FROM SERVER = %v FOR JOBID = %v \n", chuteId, jobID)
 	//makeChuteIdPacket(apiChuteSnd, jobId, casketId, chuteId);
 	//mcastApiSend(chutePacket);
 }
 
 func processSortData(data []byte) {
-	jobID := strconv.Itoa(int(data[DSI+1]) + int(data[DSI+2])*256 +
-		int(data[DSI+3])*65536 + int(data[DSI+4])*16777216)
-	casketID := strconv.Itoa(int(data[DSI+5]) + int(data[DSI+6])*256)
-	chuteID := strconv.Itoa(int(data[DSI+7]) + int(data[DSI+8])*256)
-	sortStatus := strconv.Itoa(int(data[DSI+9]))
-	//uuid 10 to 46
-	uuid := "1234567891234567891234567891234567890"
-	sorterID := strconv.Itoa(int(data[DSI+47]))
+	jobID := strconv.Itoa(int(data[DSI]) + int(data[DSI+1])*256 +
+		int(data[DSI+2])*65536 + int(data[DSI+3])*16777216)
+	casketID := strconv.Itoa(int(data[DSI+4]) + int(data[DSI+5])*256)
+	chuteID := strconv.Itoa(int(data[DSI+6]) + int(data[DSI+7])*256)
+	sortStatus := strconv.Itoa(int(data[DSI+8]))
+	uuid := fmt.Sprintf("%+q", data[DSI+9:DSI+46]) //uuid 9 to 45
+	sorterID := strconv.Itoa(int(data[DSI+46]))
 	sort := &Sort{jobID, uuid, sortStatus, chuteID}
 
-	fmt.Printf(`SORT RECEIVED : JOB ID - %s CASKET_ID - %s CHUTE_ID - %s UUID - %s,
-	SORT STATUS - %s\n`, jobID, casketID, chuteID, uuid, sortStatus)
+	log.Printf("SORT RECEIVED : JOB ID - %s CASKET_ID - %s CHUTE_ID - %s UUID - %s,"+
+		"SORT STATUS - %s\n", jobID, casketID, chuteID, uuid, sortStatus)
 
 	switch sorterType := uint8(data[15]); RcvType(sorterType) {
 	case SORT_SORTER:
@@ -174,9 +184,28 @@ func processSortData(data []byte) {
 	}
 }
 
-func processEventData(data []byte) {
-	//request to corresponding url
-	//sendEventData(data)
+func processEventData() {
+	log.Println("Event data started.")
+	for  {
+		//log.Println("Executing processEventData");
+		
+		eventMutex.Lock()
+		if EventList.Len() != 0{
+			data := EventList.Front().Value.([]byte)
+			EventList.Remove(EventList.Front())
+			eventMutex.Unlock()
+
+			eventLen := int(data[9]) + int(data[10])* 256;
+			eventData := fmt.Sprintf("%+q", data[DSI:DSI+ eventLen])
+			event := &Event{eventData}
+			log.Printf("EVENT RECEIVED :%+v\n", event)
+			sendEventData(event)
+		}else{
+			eventMutex.Unlock()
+			time.Sleep(time.Millisecond * 10)
+			//log.Println("Sleeping for 10 Millisecond")
+		}
+	}
 }
 
 func sendScanData(scan *Scan) int {
@@ -208,8 +237,8 @@ func sendSortData(data *Sort, sortType RcvType, sorterID string) {
 		ecdsSortData := &EcdsSort{*data, sorterID}
 		req = makeRequest(ecdsSortData, "POST", Conf["feedback_url"])
 	case SORT_ICR:
-		sorterData := &IcrSort{*data, sorterID}
-		req = makeRequest(sorterData, "POST", Conf["sort_url"])
+		icrData := &IcrSort{*data, sorterID}
+		req = makeRequest(icrData, "POST", Conf["sort_url"])
 	}
 
 	client := &http.Client{Timeout: time.Second}
@@ -223,7 +252,11 @@ func sendSortData(data *Sort, sortType RcvType, sorterID string) {
 }
 
 func sendEventData(data *Event) {
-	//prepare and send event
-	//make request handle
-	// send sequentially
+	req := makeRequest(data, "POST", Conf["event_url"])
+	client := &http.Client{Timeout: time.Second}
+	resp, err := client.Do(req)
+	checkError("fatal", "req execution failed", err)
+
+	defer resp.Body.Close()
+	log.Println("Event response received ", resp)
 }

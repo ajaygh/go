@@ -90,11 +90,11 @@ func handleSort(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&sd)
 	checkDecodeError(w, err)
 
-	fmt.Println("Decoded successfully", sd)
+	fmt.Println("Decoded successfully sort data", sd)
 
 	ss, _ := json.Marshal("detail : ok")
 	err = json.NewEncoder(w).Encode(&ss)
-	fmt.Println(time.Now(), ss, "sent api scan")
+	fmt.Printf("%v: sort res = %+q \n",time.Now(), ss)
 }
 
 func handleEvent(w http.ResponseWriter, r *http.Request) {
@@ -102,13 +102,14 @@ func handleEvent(w http.ResponseWriter, r *http.Request) {
 	var event Event
 	err := json.NewDecoder(r.Body).Decode(&event)
 	checkDecodeError(w, err)
-
+	fmt.Printf("Decoded event is %+v \n", event)
 	now := time.Now()
 	n := rand.Intn(30)
-	time.Sleep(time.Second * time.Duration(n))
+	time.Sleep(time.Millisecond * time.Duration(n))
 	now1 := time.Now()
-	fmt.Println(now1, "Successful decode Waited seconds", now.After(now1))
-	fmt.Fprintf(w, "res sent after %d", n)
+	ss, _ := json.Marshal("detail : ok")
+	err = json.NewEncoder(w).Encode(&ss)
+	fmt.Printf("[%v] Waited : %v Resonse %+q\n", now1, now.After(now1), ss)
 }
 
 func handleOperation(w http.ResponseWriter, r *http.Request) {

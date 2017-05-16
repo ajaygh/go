@@ -24,7 +24,7 @@ type ScanRcv struct {
 }
 
 type Event struct {
-	Code string `json:"code"`
+	Code string `json:"event_code"`
 }
 
 //Receive sort data

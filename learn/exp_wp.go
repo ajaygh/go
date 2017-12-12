@@ -6,8 +6,8 @@ import (
 )
 
 const (
-	MaxJob    = 100000000
-	MaxWorker = 20
+	MaxJob    = 1000000
+	MaxWorker = 4
 )
 
 type Job struct {
@@ -16,6 +16,7 @@ type Job struct {
 
 var (
 	JobQueue = make(chan Job, MaxJob)
+	resQueue = make(chan struct{}, MaxJob)
 )
 
 type Worker struct {
@@ -33,6 +34,7 @@ func (w *Worker) Start() {
 			select {
 			case job := <-w.JobChannel:
 				fmt.Println("job ", job.data, " performend by worker ", w.Id)
+				resQueue <- struct{}{}
 			case <-w.quit:
 				return
 			}
@@ -94,5 +96,8 @@ func main() {
 		JobQueue <- Job{i + 1}
 	}
 
+	for i := 0; i < MaxJob; i++ {
+		<-resQueue
+	}
 	//	time.Sleep(time.Second * 10)
 }

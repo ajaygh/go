@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net"
 	"os"
+	//	"time"
 )
 
 func main() {
@@ -20,17 +20,20 @@ func main() {
 	fmt.Println("tcpAddr : ", tcpAddr)
 	conn, err := net.DialTCP("tcp", nil, tcpAddr)
 	checkError(err)
+	defer conn.Close()
+
 	fmt.Println("client conn : ", conn)
 
-	_, err = conn.Write([]byte("HEAD from client"))
-	checkError(err)
-	fmt.Println("Write done")
-
-	result, err := ioutil.ReadAll(conn)
-	checkError(err)
-	fmt.Println("Read done")
-	fmt.Println(string(result))
-	os.Exit(0)
+	buf := make([]byte, 1000)
+	for {
+		_, err = conn.Read(buf)
+		checkError(err)
+		fmt.Println("received : ", buf)
+		//	_, err = conn.Write([]byte(fmt.Sprintln("HEAD from client %s", os.Args[2])))
+		//	checkError(err)
+		//	fmt.Println("Write done")
+		//		time.Sleep(time.Millisecond * 3)
+	}
 }
 
 func checkError(err error) {

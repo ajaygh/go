@@ -24,21 +24,30 @@ func Average(in ...float64) float64 {
 func TestAverage(t *testing.T) {
 	v := Average(1, 2)
 	if v != 1.5 {
-		t.Error("Expected 1.5 got ", v)
+		t.Error("Expected: ", 1.5, " Actual: ", v)
 	}
+
 	fmt.Println("Testing float slices")
 	tests := []TestPair{
 		{[]float64{1, 2, 3}, 2},
 		{[]float64{1, 2}, 1.5},
 		{[]float64{1, 1, 1}, 1},
 		{[]float64{}, 0},
+
+		//Netagive test case
+		//{[]float64{1, 3}, 1},
 	}
 	//start testing
 	for _, pair := range tests {
 		v := Average(pair.Input...)
 		if v != pair.Output {
-			t.Error("Expected ", pair.Output,
-				"got ", v)
+			t.Error("Expected: ", pair.Output, "Actual: ", v)
 		}
+	}
+}
+
+func BenchmarkAverage(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		Average(2, 3, 4)
 	}
 }

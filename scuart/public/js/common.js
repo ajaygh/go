@@ -33,7 +33,52 @@ $(function(){
     $('#btn-cct-light2').on('click', function(){
         send('/cct/2', {cct: $('#cctLight2').val()})
     })
+
+    $('#statusLight1').on('click', function(){
+        updateLight(ls1)
+    })
+    $('#statusLight2').on('click', function(){
+        updateLight(ls2)
+    })
+
+    getStatus()
 })
+
+var ls1 = null, ls2 = null // light status
+function getStatus(){
+    var ws = new WebSocket('ws://'+location.host+'/light/status')
+
+    ws.onopen = function(e){
+        console.log('connected')
+        ws.send('connected')
+    }
+    ws.onclose = function(e){
+        console.log('connetion closed')
+    }
+    ws.onerror = function(e){
+        console.log('connetion error')
+    }
+    ws.onmessage = function(e){
+        data = JSON.parse(e.data)
+        console.log('data received', data)
+
+        if(data.id == 1){
+            ls1 = data
+        }else  if(data.id == 2){
+            ls2 = data
+        }
+    }
+}
+
+function updateLight(data){
+    if (data == null) return
+
+    $('#statusInputPower').val(data.inputPower)
+    $('#statusDim').val(data.dim)
+    $('#statusOuptputVoltage').val(data.outputVoltage)
+    $('#statusOutputCurrent').val(data.outputCurrent)
+    $('#statusTime').val(data.timestamp)
+}
 
 function send(url, data){
     console.log(url, data)

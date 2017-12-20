@@ -4,6 +4,8 @@ import (
 	"errors"
 	"strconv"
 
+	"golang.org/x/net/websocket"
+
 	"github.com/ajaygh/scuart/app/serial"
 	r "github.com/revel/revel"
 )
@@ -59,6 +61,27 @@ func (c App) CCT(id int) r.Result {
 	}
 	serial.Send(makeCCTData(id, cct))
 	r.INFO.Println("cct data sent")
+	return c.Render()
+}
+
+// LightStatus sends light status
+func (c App) LightStatus(ws *websocket.Conn) r.Result {
+	defer ws.Close()
+
+	var msgRcv string
+	websocket.Message.Receive(ws, &msgRcv)
+	r.INFO.Println("connected: ", msgRcv)
+
+	for {
+		status := <-serial.ChanStatus
+
+		if err := websocket.JSON.Send(ws, status); err != nil {
+			r.ERROR.Println("error in sending")
+			break
+		}
+		r.INFO.Println("successfully sent status", status)
+	}
+
 	return c.Render()
 }
 

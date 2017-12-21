@@ -12,39 +12,31 @@
 <div class="container">
   <ul class='nav nav-pills nav-justified'>
     <li class='nav-item'>
-      <a class='nav-link active' data-toggle='tab' href='#group'>
-      <i class="glyphicon glyphicon-stats"></i>GROUP</a>
+      <a class='nav-link active' data-toggle='tab' href='#group'>GROUP</a>
     </li>
     <li class='nav-item'>
-      <a class='nav-link' data-toggle='tab' href='#light1'>
-      <i class="fa fa-gamepad"></i>LIGHT_1</a>
+      <a class='nav-link' data-toggle='tab' href='#light1'>LIGHT_1</a>
     </li>
     <li class='nav-item'>
-      <a class='nav-link' data-toggle='tab' href='#light2'>
-      <i class="glyphicon glyphicon-certificate"></i>LIGHT_2</a>
+      <a class='nav-link' data-toggle='tab' href='#light2'>LIGHT_2</a>
     </li>
   </ul>
 
   <div class='tab-content'>
     <div id='group' class='tab-pane active'>
       <div class="row">
-        <h5><i>Last updated at <span id='statusTime'></span></i></h5>
-        <div id='statusPanel'>
-          <h3> INPUT POWER           <span id='statusPanelInputPower' /></h3>
-          <h3> DIM                   <span id='statusPanelDim' /></h3>
+        <div class="col-md-6">        
+          <h5><i>Last updated at <span id='statusTime'></span></i></h5>
+          <div id='statusPanel'>
+            <h3> INPUT POWER           <span id='statusPanelInputPower' /></h3>
+            <h3> DIM                   <span id='statusPanelDim' /></h3>
+          </div>
         </div>
-      </div>
-      <div class="row">
         <div class="col-md-6">
+          <h3><span class="label label-primary">POWER ON/OFF</span></h3>
           <input id="powerPanel" name="powerPanel" type="checkbox" checked data-toggle="toggle">
-          <!-- <button type="button" class="btn btn-lg btn-toggle" data-toggle="button" 
-            aria-pressed="false" autocomplete="off">
-            <div class="handle"></div>
-          </button> -->
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6">      
+          <br>     
+          <h3><span class="label label-primary">CCT</span></h3>
           <input id="cctGroup" type="text"
           data-slider-id="cctGroupSlider"
           data-provide="slider"
@@ -54,13 +46,9 @@
           data-slider-max="100" 
           data-slider-step="1" 
           data-slider-value="50"/>
-        </div>
-        <div class="col-md-6">
-          <button type="button" class="btn btn-primary" id="btn-cct-group" value="Submit">SUBMIT</button>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-12">      
+          <input type="button" class="btn btn-primary" id="btn-cct-group" value="Set CCT" />
+          <br>    
+          <h3><span class="label label-primary">DIM</span></h3>
           <input id="dimGroup" type="text" 
           data-slider-id="dimGroupSlider"
           data-provide="slider"
@@ -70,30 +58,25 @@
           data-slider-max="100" 
           data-slider-step="1" 
           data-slider-value="75"/>
-        </div>
-        <div class="col-md-6">
-          <button type="button" class="btn btn-primary" id="btn-dim-group" value="Submit">SUBMIT</button>
+          <input type="button" class="btn btn-primary" id="btn-dim-group" value="Set DIM" />
         </div>
       </div>	
     </div>
     <div id='light1' class='tab-pane'>
       <div class="row">
-        <h5><i>Last updated at <span id='statusTime'></span></i></h5>
-        <div id='statusLight1' style='text-align: left;'>
+        <div class="col-md-6">        
+          <h5><i>Last updated at <span id='statusTime'></span></i></h5>
           <h3>INPUT POWER &nbsp;<span id='statusInputPower' style='margin-left: 8em;'>100</span>W</h3>
           <h3>DIM  <span id='statusDim' style='margin-left: 13em;'>100</span>%</h3>
           <h3>OUTPUT VOLTAGE<span id='statusOutputVoltage' style='margin-left: 7em;'>50</span>V</h3>
           <h3>OUTPUT CURRENT <span id='statusOutputCurrent' style='margin-left: 7em;'>1.4</span>A</h3>
           <h3>TEMPERATURE <span id='statusLoracardTemperature' style='margin-left: 9em;'>15</span>C</h3>
-        </div>
-      </div>
-      <div class="row">
+        </div>     
         <div class="col-md-6">
+          <h3><span class="label label-primary">POWER ON/OFF</span></h3>
           <input id="powerLight1" name="powerLight1" type="checkbox" checked data-toggle="toggle">
-        </div>
-      </div>
-      <div class="row">
-        <span class="col-md-6">      
+          <br>
+          <h3><span class="label label-primary">DIM</span></h3>            
           <input id="dimLight1" type="text"
           data-slider-id="dimLight1Slider"
           data-provide="slider"
@@ -103,13 +86,9 @@
           data-slider-max="100"
           data-slider-step="1"
           data-slider-value="50"/>
-        </span>
-        <span class="col-md-6">
-          <button type="button" class="btn btn-primary" id="btn-dim-light1" value="Submit">SUBMIT</button>
-        </span>
-      </div>
-      <div class="row">
-        <span class="col-md-6">      
+          <input type="button" class="btn btn-primary" id="btn-dim-light1" value="SET DIM" />
+          <br>
+          <h3><span class="label label-primary">CCT</span></h3>          
           <input id="cctLight1" type="text"
           data-slider-id="cctLight1Slider"
           data-provide="slider"
@@ -119,30 +98,27 @@
           data-slider-max="100"
           data-slider-step="1" 
           data-slider-value="50"/>
-        </span>
-        <span class="col-md-6">
-          <button type="button" class="btn btn-primary" id="btn-cct-light1" value="Submit">SUBMIT</button>
-        </span>
+          <input type="button" class="btn btn-primary" id="btn-cct-light1" value="SET CCT" />
+        </div>
       </div>
     </div>
     <div id='light2' class='tab-pane'>
       <div class="row">
-        <h5><i>Last updated at <span id='statusTime'></span></i></h5>
-        <div id='statusLight2' style='text-align: left;'>
+        <div class="col-md-6">        
+          <h5><i>Last updated at <span id='statusTime'></span></i></h5>
+          <!-- <div id='statusLight2' style='text-align: left;'> -->
           <h3>INPUT POWER &nbsp;<span id='statusInputPower' style='margin-left: 8em;'>100</span>W</h3>
           <h3>DIM  <span id='statusDim' style='margin-left: 13em;'>100</span>%</h3>
           <h3>OUTPUT VOLTAGE<span id='statusOutputVoltage' style='margin-left: 7em;'>50</span>V</h3>
           <h3>OUTPUT CURRENT <span id='statusOutputCurrent' style='margin-left: 7em;'>1.4</span>A</h3>
           <h3>TEMPERATURE <span id='statusLoracardTemperature' style='margin-left: 9em;'>15</span>C</h3>
         </div>
-      </div>
-      <div class="row">
+      
         <div class="col-md-6">
+          <h3><span class="label label-primary">POWER ON/OFF</span></h3>          
           <input id="powerLight2" name="powerLight2" type="checkbox" checked data-toggle="toggle">
-        </div>
-      </div>
-      <div class="row">
-        <span class="col-md-6">      
+          <br>
+          <h3><span class="label label-primary">DIM</span></h3>                         
           <input id="dimLight2" type="text"
           data-slider-id="dimLight2Slider"
           data-provide="slider"
@@ -152,13 +128,9 @@
           data-slider-max="100"
           data-slider-step="1"
           data-slider-value="50"/>
-        </span>
-        <span class="col-md-6">
-          <button type="button" class="btn btn-primary" id="btn-dim-light2" value="Submit">SUBMIT</button>
-        </span>
-      </div>
-      <div class="row">
-        <span class="col-md-6">      
+          <input type="button" class="btn btn-primary" id="btn-dim-light2" value="SET DIM" />
+          <br>
+          <h3><span class="label label-primary">CCT</span></h3>
           <input id="cctLight2" type="text"
           data-slider-id="cctLight2Slider"
           data-provide="slider"
@@ -168,10 +140,8 @@
           data-slider-max="100"
           data-slider-step="1" 
           data-slider-value="50"/>
-        </span>
-        <span class="col-md-6">
-          <button type="button" class="btn btn-primary" id="btn-cct-light2" value="Submit">SUBMIT</button>
-        </span>
+          <input type="button" class="btn btn-primary" id="btn-cct-light2" value="SET CCT" />
+        </div>
       </div>
     </div>
   </div>

@@ -2,6 +2,6 @@
 	background: #BABABA;
 }
 
-#slider22 .slider-rangeHighlight {
-	background: #f70616;
+input[type="button"] {
+	margin-left: 50px;
 }

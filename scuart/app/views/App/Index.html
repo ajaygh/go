@@ -64,13 +64,10 @@
     </div>
     <div id='light1' class='tab-pane'>
       <div class="row">
-        <div class="col-md-6">        
-          <h5><i>Last updated at <span id='statusTime'></span></i></h5>
-          <h3>INPUT POWER &nbsp;<span id='statusInputPower' style='margin-left: 8em;'>100</span>W</h3>
-          <h3>DIM  <span id='statusDim' style='margin-left: 13em;'>100</span>%</h3>
-          <h3>OUTPUT VOLTAGE<span id='statusOutputVoltage' style='margin-left: 7em;'>50</span>V</h3>
-          <h3>OUTPUT CURRENT <span id='statusOutputCurrent' style='margin-left: 7em;'>1.4</span>A</h3>
-          <h3>TEMPERATURE <span id='statusLoracardTemperature' style='margin-left: 9em;'>15</span>C</h3>
+        <div class="col-md-6">
+            <div id='statusLight1'>
+              <status-light></status-light>
+            </div>      
         </div>     
         <div class="col-md-6">
           <h3><span class="label label-primary">POWER ON/OFF</span></h3>
@@ -105,20 +102,15 @@
     <div id='light2' class='tab-pane'>
       <div class="row">
         <div class="col-md-6">        
-          <h5><i>Last updated at <span id='statusTime'></span></i></h5>
-          <!-- <div id='statusLight2' style='text-align: left;'> -->
-          <h3>INPUT POWER &nbsp;<span id='statusInputPower' style='margin-left: 8em;'>100</span>W</h3>
-          <h3>DIM  <span id='statusDim' style='margin-left: 13em;'>100</span>%</h3>
-          <h3>OUTPUT VOLTAGE<span id='statusOutputVoltage' style='margin-left: 7em;'>50</span>V</h3>
-          <h3>OUTPUT CURRENT <span id='statusOutputCurrent' style='margin-left: 7em;'>1.4</span>A</h3>
-          <h3>TEMPERATURE <span id='statusLoracardTemperature' style='margin-left: 9em;'>15</span>C</h3>
+          <div id='statusLight2'>
+            <status-light></status-light>
+          </div>
         </div>
       
         <div class="col-md-6">
           <h3><span class="label label-primary">POWER ON/OFF</span></h3>          
           <input id="powerLight2" name="powerLight2" type="checkbox" checked data-toggle="toggle">
           <br>
-          <h3><span class="label label-primary">DIM</span></h3>                         
           <input id="dimLight2" type="text"
           data-slider-id="dimLight2Slider"
           data-provide="slider"
@@ -128,7 +120,7 @@
           data-slider-max="100"
           data-slider-step="1"
           data-slider-value="50"/>
-          <input type="button" class="btn btn-primary" id="btn-dim-light2" value="SET DIM" />
+          <input type="button" class="btn btn-primary" id="btn-dim-light2" value="SET DIM" />       
           <br>
           <h3><span class="label label-primary">CCT</span></h3>
           <input id="cctLight2" type="text"

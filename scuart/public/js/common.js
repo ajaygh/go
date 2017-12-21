@@ -41,8 +41,48 @@ $(function(){
         updateLight(ls2)
     })
 
-    getStatus()
+    Vue.component('status-light', {
+        template: sStatusLight
+    })
+    new Vue({
+        el: '#statusLight1'
+    })
+    new Vue({
+        el: '#statusLight2'
+    })
+
+    getStatus()    
 })
+
+//<h3>DIM  <span id="statusDim" style="margin-left: 13em;">100</span>%</h3>
+var sStatusLight = `
+<div>
+    <h5><i>Last updated at <span id='statusTime'></span></i></h5>
+    <table class="table">
+        <tbody>
+            <tr>
+                <td><h4>INPUT POWER</h4></td>
+                <td><span id="statusInputPower">100</span>W</td>
+            </tr>
+            <tr>
+                <td><h4>DIM</h4></td>
+                <td><span id="statusDim">100</span>%</td>
+            </tr>
+            <tr>
+                <td><h4>OUTPUT VOLTAGE</h4></td>
+                <td><span id="statusOutputVoltage">50</span>V</td>
+            </tr>
+            <tr>
+                <td><h4>OUTPUT CURRENT</h4></td>
+                <td><span id="statusOutputCurrent">1.4</span>A</td>
+            </tr>
+            <tr>
+                <td><h4>INTERNAL TEMPERATURE</h4></td>
+                <td><span id="statusLoracardTemperature">16</span>Cels</td>
+            </tr>
+        </tbody>
+    </table>
+</div>`
 
 var ls1 = null, ls2 = null // light status
 function getStatus(){

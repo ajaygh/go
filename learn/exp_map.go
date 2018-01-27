@@ -4,16 +4,24 @@ import (
 	"fmt"
 )
 
-func mp(p map[int]string) {
-	p[4] = "four"
-	p[5] = "five"
+var (
+	fruit = make(map[int]int)
+)
+
+func init() {
+	fruit[44] = 6
+	fruit[33] = 9
 }
 
 func main() {
-	p := make(map[int]string)
-	p[1] = "one"
-	fmt.Println("before ", p)
-	mp(p)
-	fmt.Println("after ", p)
+	for k, v := range fruit {
+		fmt.Println("k=", k, "v=", v)
+	}
+	tmp := 9007306628923392
+	fr, ok := fruit[tmp]
+	if !ok {
+		fr = 5
+	}
+	fmt.Println(fr)
 
 }

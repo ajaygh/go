@@ -25,3 +25,19 @@ func TestFib(t *testing.T) {
 		log.Printf("works ")
 	}
 }
+
+func BenchmarkFib10(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		Fib(10)
+	}
+}
+
+var res20 int
+
+func BenchmarkFib20(b *testing.B) {
+	tmp := 0
+	for n := 0; n < b.N; n++ {
+		tmp = Fib(20)
+	}
+	res20 = tmp
+}
